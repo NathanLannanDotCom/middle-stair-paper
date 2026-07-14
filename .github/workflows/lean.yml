@@ -1,0 +1,52 @@
+name: Lean verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the formal development
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: formal
+          build: true
+          test: false
+          lint: false
+      - name: Check theorem axiom dependencies
+        working-directory: formal
+        shell: bash
+        run: |
+          set -o pipefail
+          output="$(lake env lean AxiomAudit.lean 2>&1)"
+          printf '%s\n' "$output"
+          AXIOM_OUTPUT="$output" python3 - <<'PY'
+          import os
+          import re
+          import sys
+
+          text = os.environ["AXIOM_OUTPUT"]
+          groups = re.findall(r"depends on axioms:\s*\[([^]]*)\]", text, re.S)
+          if not groups:
+              sys.exit("Could not parse the #print axioms output")
+
+          observed = {
+              name.strip()
+              for group in groups
+              for name in group.replace("\n", " ").split(",")
+              if name.strip()
+          }
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          unexpected = observed - allowed
+          if unexpected:
+              sys.exit(f"Unexpected axiom dependencies: {sorted(unexpected)}")
+          PY

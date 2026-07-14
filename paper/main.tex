@@ -1,0 +1,415 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!55!black]{hyperref}
+
+\allowdisplaybreaks
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{0.15em}
+\setlist{nosep}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\chips}[1]{\lvert #1\rvert}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{The middle stair in parallel chip-firing}
+\fancyhead[R]{Draft for specialist review}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[L]{The middle stair in parallel chip-firing}%
+  \fancyhead[R]{Draft for specialist review}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+}
+
+\title{The Middle Stair in Parallel Chip-Firing}
+\author{%
+  OpenAI Codex (GPT-5.6 Sol)\thanks{The documented model slug is
+  \texttt{gpt-5.6-sol}. The exact runtime build identifier was not exposed to
+  this session.}\\[-1pt]
+  \small AI research system
+  \and
+  Nathan Lannan\\[-1pt]
+  \small \href{mailto:nathan@nathanlannan.com}{\texttt{nathan@nathanlannan.com}}\\[-1pt]
+  \small No institutional affiliation
+}
+\date{13 July 2026}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+Let $G=(V,E)$ be a finite connected simple graph. In parallel chip-firing,
+every vertex with at least its degree in chips fires simultaneously, sending
+one chip to each neighbor. We prove that every nonnegative integral
+configuration $\sigma$ satisfying
+\[
+   2|E|-|V|<\chips{\sigma}<2|E|
+\]
+has least eventual state period two. This is the statement posed as
+Conjecture~2 by Ji, Li, and Wang. The main new ingredient is a density
+inequality: a returning orbit whose common activity is less than one half has
+at most $2|E|-|V|$ chips. Its proof selects a minimum of a centered
+firing-prefix function independently at each vertex and pairs the resulting
+integer correction terms edge by edge. The standard affine chip complement
+gives the corresponding high-activity bound. These inequalities force
+activity one half in the strict middle band, after which the nonclumpiness
+theorem of Jiang, Scully, and Zhang forces alternating firing and hence a
+two-cycle. The complete theorem and a counterexample to period two from time
+zero have also been formalized in Lean.
+\end{abstract}
+
+\section{Introduction}
+
+Parallel chip-firing is a deterministic synchronous dynamical system on
+integer configurations of a graph. Its eventual behavior has been studied
+since Bitar and Goles~\cite{BitarGoles1992}; see also
+Jiang~\cite{Jiang2010}. On complete graphs, Levine connected the activity
+function with a devil's staircase and a rotation number
+\cite{Levine2011}. Recent work of Ji, Li, and Wang isolates the middle stair
+for a general finite connected graph~\cite{JiLiWang2024}. They pose the
+following assertion as their Conjecture~2.
+
+\begin{theorem}[Middle-stair theorem]\label{thm:main}
+Let $G=(V,E)$ be a finite connected simple graph and let
+$\sigma:V\to\Z_{\ge 0}$ be a chip configuration. If
+\[
+   2|E|-|V|<\sum_{v\in V}\sigma(v)<2|E|,
+\]
+then the least eventual state period of $\sigma$ is exactly two.
+\end{theorem}
+
+The theorem was previously known in several graph classes; Ji, Li, and Wang
+summarize the tree, cycle, complete-graph, and balanced complete-bipartite
+cases~\cite{JiLiWang2024}. Our contribution is a graph-independent density
+inequality for low-activity returning orbits (Lemma~\ref{lem:low-density}).
+The complementary inequality follows from the established affine complement
+for parallel chip-firing~\cite{Jiang2010}. These inequalities force activity
+$1/2$. The remaining step uses the theorem of Jiang, Scully, and Zhang that a
+periodic firing word cannot contain both $00$ and $11$
+\cite[Theorem~6.2]{JiangScullyZhang2015}.
+
+We make no priority claim beyond the literature review recorded with this
+draft. Formal verification establishes correctness relative to the stated
+definitions and dependencies, not originality. The low-activity density
+inequality is therefore the main point requiring specialist comparison with
+prior work.
+
+\section{Dynamics, recurrence, and common activity}
+
+Write $n=|V|$, $m=|E|$, and $d_v=\deg(v)$. A configuration is a map
+$\sigma:V\to\Z_{\ge 0}$. At time $t$, define the firing indicator
+\[
+ f_t(v)=
+ \begin{cases}
+ 1,&\sigma_t(v)\ge d_v,\\
+ 0,&\sigma_t(v)<d_v.
+ \end{cases}
+\]
+All active vertices fire simultaneously. If $L=D-A$ is the graph Laplacian,
+then one round is
+\begin{equation}\label{eq:update}
+   \sigma_{t+1}=\sigma_t-Lf_t.
+\end{equation}
+The total number of chips is conserved, and nonnegative configurations remain
+nonnegative.
+
+A positive integer $p$ is an \emph{eventual state period} of $\sigma_0$ if
+there is $\mu\ge 0$ such that
+\[
+   \sigma_{\mu+p+t}=\sigma_{\mu+t}\qquad(t\ge 0).
+\]
+The least such $p$ is the least eventual state period. This is a period of the
+state orbit, not merely of an aggregate activity statistic.
+
+Since the coordinates are nonnegative and have fixed sum, every orbit is
+eventually periodic. Restart at a state on a returning orbit and let $T>0$ be
+any return length, so $\sigma_T=\sigma_0$. Put
+\[
+   u_v(t)=\sum_{s=0}^{t-1}f_s(v),\qquad 0\le t\le T.
+\]
+Telescoping~\eqref{eq:update} gives
+\begin{equation}\label{eq:telescoping}
+   \sigma_t=\sigma_0-Lu(t).
+\end{equation}
+At $t=T$ this yields $Lu(T)=0$. An integer-valued harmonic function on a
+connected graph is constant, so there is an integer $q$, $0\le q\le T$, such
+that
+\begin{equation}\label{eq:common-count}
+   u_v(T)=q\qquad\text{for every }v\in V.
+\end{equation}
+Thus every vertex has the same activity $q/T$. This common-count criterion is
+standard in the subject; compare~\cite{BitarGoles1992,Jiang2010}.
+
+We will use the following established firing-word theorem. Regard
+$(f_0(v),\ldots,f_{T-1}(v))$ as a cyclic binary word.
+
+\begin{theorem}[Jiang--Scully--Zhang nonclumpiness]\label{thm:nonclumpy}
+On a returning parallel chip-firing orbit, the cyclic firing word of every
+vertex does not contain both a cyclic occurrence of $00$ and a cyclic
+occurrence of $11$.
+\end{theorem}
+
+This is the nonclumpiness theorem of
+Jiang, Scully, and Zhang~\cite[Theorem~6.2]{JiangScullyZhang2015}. It enters
+only after the density argument has forced $q/T=1/2$.
+
+\section{A low-activity density inequality}
+
+\begin{lemma}[Low-activity density bound]\label{lem:low-density}
+Let $\sigma_0,\ldots,\sigma_T=\sigma_0$ be a returning orbit on a finite
+connected simple graph. Let $q$ be the common firing count in
+\eqref{eq:common-count}. If $2q<T$, then
+\[
+   \chips{\sigma_0}:=\sum_{v\in V}\sigma_0(v)\le 2m-n.
+\]
+\end{lemma}
+
+\begin{proof}
+For each vertex $v$, define the denominator-cleared centered prefix height
+\[
+   h_v(t)=T u_v(t)-qt,\qquad 0\le t\le T.
+\]
+Equation~\eqref{eq:common-count} gives $h_v(T)=h_v(0)=0$, so $h_v$ may be
+viewed on the cyclic set of phases modulo $T$. Independently for every
+vertex, select a phase at which $h_v$ is minimal. Let
+$\tau_v\in\{0,\ldots,T-1\}$ be the round immediately preceding that phase.
+When $\tau_v=T-1$, the endpoint $T$ represents phase zero.
+
+Minimality against the preceding phase gives
+\[
+  0\ge h_v(\tau_v+1)-h_v(\tau_v)=T f_{\tau_v}(v)-q.
+\]
+Because $q<T$ and $f_{\tau_v}(v)\in\{0,1\}$, this forces
+\begin{equation}\label{eq:selected-waits}
+  f_{\tau_v}(v)=0.
+\end{equation}
+
+Fix an edge $\{v,w\}$. The independently selected minima satisfy
+\[
+  h_v(\tau_v+1)\le h_v(\tau_w),
+  \qquad
+  h_w(\tau_w+1)\le h_w(\tau_v).
+\]
+Using~\eqref{eq:selected-waits} and adding these inequalities gives
+\begin{equation}\label{eq:edge-charge-bound}
+   T K_{vw}\le 2q,
+\end{equation}
+where
+\[
+  K_{vw}=
+  u_v(\tau_v)-u_w(\tau_v)
+  +u_w(\tau_w)-u_v(\tau_w).
+\]
+The number $K_{vw}$ is an integer. Since $2q<T$, inequality
+\eqref{eq:edge-charge-bound} implies
+\begin{equation}\label{eq:edge-charge-sign}
+   K_{vw}\le 0.
+\end{equation}
+
+Vertex $v$ waits at time $\tau_v$, so chip integrality gives
+$\sigma_{\tau_v}(v)\le d_v-1$. Applying~\eqref{eq:telescoping} at the
+vertex-dependent time $\tau_v$ yields
+\[
+  \sigma_0(v)
+  \le d_v-1+(Lu(\tau_v))_v.
+\]
+Every one of these inequalities bounds a coordinate of the same initial
+configuration, so they may be summed even though the selected times differ.
+Regrouping the Laplacian terms by unoriented edges gives
+\[
+\begin{aligned}
+  \chips{\sigma_0}
+  &\le \sum_{v\in V}(d_v-1)
+       +\sum_{\{v,w\}\in E}K_{vw}\\
+  &\le 2m-n,
+\end{aligned}
+\]
+where the last inequality uses~\eqref{eq:edge-charge-sign}. This proves the
+claim.
+\end{proof}
+
+The bound is attained, for every connected graph with at least two vertices,
+by the fixed configuration $\sigma(v)=d_v-1$. Thus its numerical threshold
+cannot be improved without further hypotheses.
+
+\section{Complementation and the high-activity bound}
+
+\begin{lemma}[High-activity density bound]\label{lem:high-density}
+Let $\sigma_0,\ldots,\sigma_T=\sigma_0$ be a returning orbit with common
+firing count $q$. If $T/2<q<T$, then
+\[
+   \chips{\sigma_0}\ge 2m.
+\]
+\end{lemma}
+
+\begin{proof}
+Since $q<T$, every vertex waits at least once during the return interval. At
+a time when $v$ waits, its chip count is at most $d_v-1$. The coordinatewise
+upper bound
+\begin{equation}\label{eq:periodic-box}
+   \sigma_t(v)\le 2d_v-1
+\end{equation}
+then persists under one update: a waiting vertex receives at most $d_v$
+chips, while a firing vertex loses $d_v$ chips and receives at most $d_v$.
+Following the returning orbit once from a waiting phase for each $v$ proves
+\eqref{eq:periodic-box} at every phase.
+
+Define the affine complement
+\[
+   \sigma_t^c(v)=2d_v-1-\sigma_t(v).
+\]
+It is nonnegative by~\eqref{eq:periodic-box}. The threshold rule gives
+$f_t^c=\one-f_t$, and $L\one=0$ shows that complementation commutes with the
+update. Hence $\sigma^c$ is a returning orbit with common firing count
+$T-q<T/2$. Lemma~\ref{lem:low-density} gives
+$\chips{\sigma_0^c}\le 2m-n$. On the other hand,
+\[
+   \chips{\sigma_0^c}
+   =\sum_{v\in V}(2d_v-1)-\chips{\sigma_0}
+   =4m-n-\chips{\sigma_0}.
+\]
+Rearrangement gives $\chips{\sigma_0}\ge 2m$.
+\end{proof}
+
+The configuration $\sigma(v)=d_v$ is fixed because every vertex fires and
+$L\one=0$; it attains the threshold $2m$. Together with the example following
+Lemma~\ref{lem:low-density}, this explains why the inequalities in
+Theorem~\ref{thm:main} must be strict.
+
+\section{Proof of the middle-stair theorem}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Restart the eventual orbit at a returning state, and let $T>0$ be a return
+length with common firing count $q$. The chip total remains in the strict
+middle band.
+
+The cases $q=0$ and $q=T$ are impossible. In the first case all vertices wait
+throughout the return interval, so $\sigma(v)\le d_v-1$ and
+$\chips{\sigma}\le 2m-n$. In the second case all vertices fire, so
+$\sigma(v)\ge d_v$ and $\chips{\sigma}\ge 2m$.
+
+If $2q<T$, Lemma~\ref{lem:low-density} contradicts the lower strict
+inequality. If $T<2q$, then $q<T$ and Lemma~\ref{lem:high-density} contradicts
+the upper strict inequality. Therefore
+\begin{equation}\label{eq:half-activity}
+   2q=T.
+\end{equation}
+
+Each cyclic firing word has $q$ ones and $T-q=q$ zeros. By
+Theorem~\ref{thm:nonclumpy}, it has no cyclic $00$ or no cyclic $11$. A
+balanced cyclic binary word with either property must alternate. Consequently
+\[
+   f_{t+1}(v)=1-f_t(v)
+\]
+for every vertex and every phase on the returning orbit. Applying
+\eqref{eq:update} twice now gives
+\[
+\begin{aligned}
+   \sigma_{t+2}
+   &=\sigma_t-L(f_t+f_{t+1})\\
+   &=\sigma_t-L\one
+    =\sigma_t.
+\end{aligned}
+\]
+Thus two is an eventual state period.
+
+It remains to exclude eventual period one. At a fixed state, $Lf=0$; by
+connectedness, the binary firing indicator $f$ is constant. If $f=0$, then
+$\chips{\sigma}\le 2m-n$, and if $f=\one$, then
+$\chips{\sigma}\ge 2m$. Conservation of the chip total contradicts the
+strict band in either case. Hence one is not an eventual period, and the least
+eventual state period is exactly two.
+\end{proof}
+
+\section{Eventuality and boundary cases}
+
+The word ``eventual'' in Theorem~\ref{thm:main} cannot be removed. Let $G$ be
+the path on three vertices, with the first coordinate at the center, and start
+from
+\[
+   (0,0,2).
+\]
+Here $n=3$, $m=2$, and $1<2<4$. Direct application of the parallel update
+gives
+\[
+ (0,0,2)\longmapsto(1,0,1)\longmapsto(2,0,0)
+ \longmapsto(0,1,1)\longmapsto(2,0,0).
+\]
+Thus the initial state does not return after two rounds; the two-cycle begins
+at time two. The displayed transitions and both period claims are checked in
+the accompanying Lean development.
+
+The endpoint configurations $d_v-1$ and $d_v$ are fixed and have totals
+$2m-n$ and $2m$, respectively, when the connected graph has at least two
+vertices. Consequently neither strict inequality in the theorem can be
+replaced by a weak inequality. For the one-vertex connected graph, the strict
+middle band contains no nonnegative chip total.
+
+\section{Formal verification}
+
+The accompanying Lean 4 development uses Lean 4.31.0 and mathlib v4.31.0.
+Its terminal declaration is
+\begin{quote}
+\texttt{MiddleStair.middle\_stair\_least\_eventual\_period\_two}.
+\end{quote}
+The definitions distinguish returning cycles, eventual state periods, and
+least positive eventual state periods. The development formalizes finite
+recurrence, common firing counts, Lemmas~\ref{lem:low-density} and
+\ref{lem:high-density}, half activity, alternation, the two-step return, and
+the exclusion of eventual period one. It also formalizes the three-vertex
+counterexample above.
+
+For Theorem~\ref{thm:nonclumpy}, the development formalizes the sector and
+mischief argument of Jiang, Scully, and Zhang. Its only exhaustive local step
+checks a $256^2$-pair reduced-cost certificate by Lean kernel reduction; the
+subsequent graph-level argument is symbolic. This provides a closed formal
+dependency, but fidelity of the encoding to the published proof remains a
+human-review question distinct from kernel correctness.
+
+The project contains no \texttt{sorry}, \texttt{admit}, or declared project
+axiom. An included \texttt{\#print axioms} audit reports only Lean and mathlib
+logical foundations. Exact build instructions and a proof-to-code map are
+available in the accompanying
+\href{https://github.com/NathanLannanDotCom/middle-stair-paper}{public GitHub
+repository}.
+
+\clearpage
+\section*{Authorship and disclosure}
+
+At Nathan Lannan's explicit direction, OpenAI Codex (GPT-5.6 Sol) is listed as
+first author and Nathan Lannan as second author. The AI system materially
+assisted with literature triage, proof exploration, Lean formalization,
+adversarial checking, and manuscript drafting. This attribution is
+nontraditional and may not satisfy a journal's authorship policy. Nathan
+Lannan has no institutional affiliation and can be contacted at
+\href{mailto:nathan@nathanlannan.com}{\texttt{nathan@nathanlannan.com}}. He
+must approve the final text and accept the human scholarly responsibility
+required before submission.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
