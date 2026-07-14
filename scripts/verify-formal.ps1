@@ -34,8 +34,36 @@ try {
     & $lake -KmaxJobs=1 build
     if ($LASTEXITCODE -ne 0) { throw "lake build failed with exit code $LASTEXITCODE" }
 
-    & $lake env lean AxiomAudit.lean
-    if ($LASTEXITCODE -ne 0) { throw "axiom audit failed with exit code $LASTEXITCODE" }
+    $axiomLines = @(& $lake env lean AxiomAudit.lean 2>&1)
+    $axiomExitCode = $LASTEXITCODE
+    $axiomLines | ForEach-Object { Write-Output $_ }
+    if ($axiomExitCode -ne 0) {
+        throw "axiom audit failed with exit code $axiomExitCode"
+    }
+
+    $axiomText = $axiomLines -join [System.Environment]::NewLine
+    $groups = [System.Text.RegularExpressions.Regex]::Matches(
+        $axiomText,
+        'depends on axioms:\s*\[([^]]*)\]',
+        [System.Text.RegularExpressions.RegexOptions]::Singleline
+    )
+    if ($groups.Count -eq 0) {
+        throw 'Could not parse the #print axioms output.'
+    }
+
+    $allowedAxioms = @('propext', 'Classical.choice', 'Quot.sound')
+    $observedAxioms = @(
+        foreach ($group in $groups) {
+            foreach ($name in (($group.Groups[1].Value -replace "`r?`n", ' ') -split ',')) {
+                $trimmed = $name.Trim()
+                if ($trimmed) { $trimmed }
+            }
+        }
+    ) | Sort-Object -Unique
+    $unexpectedAxioms = @($observedAxioms | Where-Object { $_ -notin $allowedAxioms })
+    if ($unexpectedAxioms.Count -ne 0) {
+        throw "Unexpected axiom dependencies: $($unexpectedAxioms -join ', ')"
+    }
 } finally {
     Pop-Location
 }

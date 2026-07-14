@@ -15,6 +15,7 @@ The exact mathlib dependency graph is recorded in `lake-manifest.json`.
 ## Build
 
 ```powershell
+lake exe cache get
 lake -KmaxJobs=1 build
 lake env lean AxiomAudit.lean
 ```
@@ -49,4 +50,5 @@ the imported mathlib foundations. A human reviewer must still check that:
 - the theorem statement matches the conjecture in the literature; and
 - the paper proof faithfully explains the formal argument.
 
-See `../handoff/PROOF_TO_LEAN_MAP.md` for the exact correspondence.
+See [`../review/PROOF_MAP.md`](../review/PROOF_MAP.md) for the exact
+correspondence.

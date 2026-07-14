@@ -1,4 +1,4 @@
-# Novelty and prior-art record
+# Prior art and novelty status
 
 Status checked 13 July 2026. This is a targeted search record, not a proof of
 priority.
@@ -16,7 +16,7 @@ August 2024, state as Conjecture 2 that every configuration in
 has period two. Their convention shifts an orbit to its periodic part, so the
 paper's phrase `least eventual state period` is the appropriate explicit
 formulation. Version 2 remains the latest official arXiv version found; no
-March 2026 revision exists on arXiv.
+later arXiv revision was found during the recorded search.
 
 Their paper proves general exclusions of periods three and four and handles
 special graph classes. Its balanced complete-bipartite statement contains an
@@ -73,7 +73,7 @@ possibly expressed through rotation numbers, motors, fixed-energy sandpiles,
 or a potential inequality. Once activity one half is known, the final theorem
 is largely a consequence of Jiang-Scully-Zhang and is not the novel core.
 
-## Minimum evidence before a public claim
+## Minimum evidence before claiming priority or submitting
 
 1. Search MathSciNet and zbMATH for work citing Ji-Li-Wang and for general
    activity-density inequalities after August 2024.
