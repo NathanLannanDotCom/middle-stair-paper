@@ -1,0 +1,31 @@
+# SHA-256 manifest for the focused formal snapshot
+
+Computed after narrowing the import root and axiom audit. Paths are relative to
+the repository root.
+
+```text
+1f62597e3ef5e8f4bdf2767eb7f886f7c57d399181413af8497a2cf60de5ea0e  formal/AxiomAudit.lean
+22916da86514a8fee314e764b3966cc3cff48e6ed53af6ece63b57959b2eeeea  formal/lakefile.toml
+2e7d04bdbfe27a51758e66ee39de07edd39adbd0ca97f86440b7842c1f81f961  formal/lake-manifest.json
+efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee  formal/lean-toolchain
+635ca80715cb0f8520c583e50bf32b80e80bdeb25dbc40fd7bc9d19b4621fd95  formal/MiddleStair.lean
+57c1db542dd1a1001923cac85d87fcba88c94115489b350c90a1488275f59845  formal/README.md
+4aeb86d49954e1ed09514d4c8d88f7a04666d0403054aa56aa48ea391e0e494e  formal/MiddleStair/Activity.lean
+a8656d9dc42f50f9de293765683a8014f64ef9f528ab88fa9acb79aa38e9bdf8  formal/MiddleStair/ComplementOrbit.lean
+6190848697955f8777a63f41fe0d4a7f4d1539ac885b37678b4089212ff2e18b  formal/MiddleStair/CyclicWrapper.lean
+234441066479c9acb762d641295d107c9ccf12ea7896749e5e5d418e62f8af2b  formal/MiddleStair/Density.lean
+0ebab310f3f8a8434ec4298f9dd3db72a2617dec4623339e72c3fc34bda03ef3  formal/MiddleStair/Dynamics.lean
+3b713f53f73fae8d1708bafb5cd5729307d0982e7132b8ef79d64a1b12e5bb9e  formal/MiddleStair/Mischief.lean
+acd1de2847b5a8dcea1a9113a199f6a73c71f950e8ba7b90703aa1d5658921ac  formal/MiddleStair/Nonclumpy.lean
+369266e5c6edab6233ce1160eed4815407dcffd2f06b2278a2350f49332e1eb3  formal/MiddleStair/Orbit.lean
+27df4cad2b09e79e50907c2e716de073ee8e4b8763446db9dc79628680fe18a1  formal/MiddleStair/Period.lean
+94abe2ce9a3e28d44dbcafb0fef050e90a917ce60d23516a84faddbefe8658bd  formal/MiddleStair/PrefixMinimum.lean
+c07435c05609bc8322a89c3bff5b1367ec8f8db27d76caf528c4d2d9242c71fd  formal/MiddleStair/TransientCounterexample.lean
+404148ac5f732b80a3e1e4d368a9ef3d7402181ca69016548db514d619bf070c  formal/MiddleStair/Universal.lean
+```
+
+Verify a file in PowerShell with:
+
+```powershell
+(Get-FileHash -Algorithm SHA256 formal\MiddleStair\Universal.lean).Hash.ToLower()
+```

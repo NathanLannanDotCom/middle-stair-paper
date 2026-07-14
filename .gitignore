@@ -1,0 +1,22 @@
+# Lean build products
+formal/.lake/
+*.olean
+*.ilean
+
+# Locally downloaded paper toolchain
+.tools/
+
+# PDF build intermediates and visual checks
+tmp/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+
+# Editor and operating-system noise
+.DS_Store
+Thumbs.db
+*.swp
+*~

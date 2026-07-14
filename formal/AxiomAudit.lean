@@ -1,0 +1,18 @@
+import MiddleStair
+
+#print axioms MiddleStair.evolve_eq_update_prefix
+#print axioms MiddleStair.laplacian_prefix_eq_zero_of_period
+#print axioms MiddleStair.complement_step
+#print axioms MiddleStair.selected_minimum_forces_wait
+#print axioms MiddleStair.selected_edge_charge_nonpositive
+#print axioms MiddleStair.actualOrbit_eventually_periodic
+#print axioms MiddleStair.common_actual_firing_count_bounds
+#print axioms MiddleStair.LowActivityPeriodicOrbit.low_activity_density
+#print axioms MiddleStair.high_activity_density_of_returning_actual
+#print axioms MiddleStair.returning_cycle_half_activity
+#print axioms MiddleStair.Mischief.reducedCost_nonnegative
+#print axioms MiddleStair.cyclic_chipFiring_nonclumpy
+#print axioms MiddleStair.actualFiring_one_eq_one_sub_zero_of_half
+#print axioms MiddleStair.middle_stair_least_eventual_period_two
+#print axioms MiddleStair.TransientCounterexample.not_period_two_from_start
+#print axioms MiddleStair.TransientCounterexample.period_two_from_time_two
