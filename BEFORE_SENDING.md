@@ -4,7 +4,8 @@ Do not send the draft until every unchecked item below has been resolved.
 
 - [ ] Confirm the spelling and order of the listed authors: OpenAI Codex
       (GPT-5.6 Sol), then Nathan Lannan.
-- [ ] Add Nathan Lannan's affiliation and contact information.
+- [x] Record that Nathan Lannan has no institutional affiliation and use
+      `nathan@nathanlannan.com` as his contact address.
 - [ ] Confirm that the intended venue will accept an AI system in the author
       list; many venues will require moving Codex to a disclosure instead.
 - [ ] Obtain Nathan Lannan's approval of the final manuscript and disclosure.

@@ -11,9 +11,8 @@ At the explicit direction of Nathan Lannan, the manuscript lists:
 
 The public [Codex model documentation](https://learn.chatgpt.com/docs/models)
 names the model `gpt-5.6-sol`. The exact runtime build identifier was not
-exposed to this session. Nathan Lannan's
-affiliation and contact address have not been supplied and remain placeholders
-in the outreach material.
+exposed to this session. Nathan Lannan has no institutional affiliation. His
+contact address is `nathan@nathanlannan.com`.
 
 This ordering is intentionally nontraditional. Many publishers and scholarly
 societies do not permit an AI system to qualify as an author because it cannot
@@ -40,7 +39,8 @@ assembly as incomplete.
 Nathan Lannan, as the named human author, must independently review the
 statement, proof, formalization correspondence, citations, and disclosure;
 satisfy the chosen venue's authorship criteria; disclose conflicts; approve
-the final text; and accept scholarly responsibility. No affiliation or
+the final text; and accept scholarly responsibility. No institutional
+affiliation should be added unless his circumstances change, and no
 contribution history may be invented.
 
 Listing Codex first does not transfer scholarly responsibility to Lean,

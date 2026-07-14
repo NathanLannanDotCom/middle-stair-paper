@@ -29,5 +29,4 @@ have not posted the draft publicly.
 Thank you,
 
 Nathan Lannan
-[Affiliation, if any]
-[Contact information]
+nathan@nathanlannan.com

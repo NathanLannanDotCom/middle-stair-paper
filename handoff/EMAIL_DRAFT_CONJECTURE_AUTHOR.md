@@ -36,5 +36,4 @@ Thank you for considering it.
 Best,
 
 Nathan Lannan
-[Affiliation, if any]
-[Contact information]
+nathan@nathanlannan.com

@@ -78,7 +78,7 @@ downloads the pinned official Tectonic 0.16.9 Windows binary into the ignored
 - Lean: clean build; no `sorry`, `admit`, or project axiom.
 - Novelty: plausible but provisional.
 - Listed authors: OpenAI Codex (GPT-5.6 Sol), first; Nathan Lannan, second.
-- Human affiliation and contact details: not yet supplied.
+- Nathan Lannan: no institutional affiliation; `nathan@nathanlannan.com`.
 - Public submission or author contact: not performed by this repository build.
 - License: not yet selected; see [LICENSE_STATUS.md](LICENSE_STATUS.md).
 

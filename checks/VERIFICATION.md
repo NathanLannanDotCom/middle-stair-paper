@@ -64,8 +64,8 @@ before building.
 Final artifact hashes at the time of this record:
 
 ```text
-163c6634cf4d986b3af18aae1b3cae30a7eb96a6abce72a4b312f4e7ff1bc979  output/pdf/middle-stair.pdf
-55e599f939ea53c84beef6fcddd1fff6153463b4bee924b77cf2ae58951d4f25e  paper/main.tex
+ffd06f39727c5237babaa4ec4f435ad1068ac3317a23efb97e8cdebfaf91d5a6  output/pdf/middle-stair.pdf
+af5d34137be90508e51f64b5f3688e18e1cd8e7ee8385e704c12b1c95d1e08e2  paper/main.tex
 d2c3bb05a4b731c6a21274f060d09d3f1f2fb2163dd7824048c59dacf334ff61  paper/references.bib
 ```
 
@@ -74,7 +74,7 @@ d2c3bb05a4b731c6a21274f060d09d3f1f2fb2163dd7824048c59dacf334ff61  paper/referenc
 The title page visibly lists:
 
 1. OpenAI Codex (GPT-5.6 Sol)
-2. Nathan Lannan
+2. Nathan Lannan, `nathan@nathanlannan.com`, no institutional affiliation
 
 The footer note records the model slug `gpt-5.6-sol` and the fact that the
 exact runtime build identifier was not exposed.
